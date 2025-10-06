@@ -9,8 +9,11 @@ import { useTheme } from '../src/context/ThemeContext';
 import { useTranslation } from 'react-i18next'
 import ThemeToggleButton from '../src/components/ThemeToggleButton';
 import GoogleSignIn from '../src/components/GoogleSignIn';
+import { useAuth } from '@clerk/clerk-expo';
 
 export default function LoginScreen() {
+  const { isSignedIn, isLoaded } = useAuth()
+
   //Hook do i18next, que fornece a função t,
   //para buscar e traduzir para o idioma atual
   const { t, i18n } = useTranslation()
@@ -23,21 +26,28 @@ export default function LoginScreen() {
 
   const router = useRouter()//Hook de navegação
 
-  useEffect(() => {
-    const verificarUsuarioLogado = async () => {
-      try {
-        const usuarioSalvo = await AsyncStorage.getItem('@user')
-        if (usuarioSalvo) {
-          router.push('/HomeScreen')//Se tiver algo armazenado local, redireciona para HomeScreen
-        }
-      } catch (error) {
-        console.log("Erro ao verificar login", error)
-      }
+
+  const verificarUsuarioLogado = async () => {
+    if (!isLoaded) return //Esperar o carregamento do Clerk
+
+    if (isSignedIn) {
+      router.replace("/HomeScreen")//Google (Clerk)
+      return
     }
 
+    try {
+      const usuarioSalvo = await AsyncStorage.getItem('@user')
+      if (usuarioSalvo) {
+        router.push('/HomeScreen')//Se tiver algo armazenado local, redireciona para HomeScreen
+      }
+    } catch (error) {
+      console.log("Erro ao verificar login", error)
+    }
+  }
+  useEffect(() => {
     //Chama a função estruturada acima
     verificarUsuarioLogado()
-  }, [])
+  }, [isLoaded, isSignedIn])
 
   // Função para simular o envio do formulário
   const handleLogin = () => {
@@ -137,7 +147,7 @@ export default function LoginScreen() {
         <Text style={styles.textoBotao}>Login</Text>
       </TouchableOpacity>
 
-      <GoogleSignIn/>
+      <GoogleSignIn />
 
       <ThemeToggleButton />
 
