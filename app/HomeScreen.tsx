@@ -10,6 +10,7 @@ import ThemeToggleButton from "../src/components/ThemeToggleButton";
 import { useTheme } from "../src/context/ThemeContext";
 import * as Notifications from "expo-notifications"
 import * as Device from "expo-device"
+import { useAuth } from "@clerk/clerk-expo";
 
 //Configuração global das notificações no foreground
 Notifications.setNotificationHandler({
@@ -21,6 +22,7 @@ Notifications.setNotificationHandler({
 })
 
 export default function HomeScreen() {
+    const{signOut} = useAuth()
     const { colors } = useTheme()//Obtenho a paleta de cores(dark ou light)
     const router = useRouter()//Hook de navegação entre telas
     const [title, setTitle] = useState('')
@@ -37,6 +39,7 @@ export default function HomeScreen() {
 
     const realizarLogoff = async () => {
         await AsyncStorage.removeItem('@user')
+        await signOut() //Encerra sessão Clerk + Google
         router.push('/')
     }
     const excluirConta = () => {

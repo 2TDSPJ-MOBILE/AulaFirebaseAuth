@@ -8,7 +8,7 @@ import { auth } from '../src/services/firebaseConfig'
 import { useTheme } from '../src/context/ThemeContext';
 import { useTranslation } from 'react-i18next'
 import ThemeToggleButton from '../src/components/ThemeToggleButton';
-
+import GoogleSignIn from '../src/components/GoogleSignIn';
 
 export default function LoginScreen() {
   //Hook do i18next, que fornece a função t,
@@ -136,6 +136,8 @@ export default function LoginScreen() {
       <TouchableOpacity style={[styles.botao, { backgroundColor: colors.button }]} onPress={handleLogin}>
         <Text style={styles.textoBotao}>Login</Text>
       </TouchableOpacity>
+
+      <GoogleSignIn/>
 
       <ThemeToggleButton />
 
