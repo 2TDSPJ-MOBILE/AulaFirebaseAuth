@@ -1,4 +1,4 @@
-import { Text, Button, Alert, TextInput, StyleSheet, ActivityIndicator, FlatList, KeyboardAvoidingView, Platform } from "react-native";
+import { Image,View,Text, Button, Alert, TextInput, StyleSheet, ActivityIndicator, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
@@ -189,9 +189,27 @@ export default function HomeScreen() {
                 {expoPushToken?<Text>Token Gerado:{expoPushToken}</Text>:(
                     <Text>Registrando token....</Text>
                 )}
-
+                
                 {user?(
-                    <Text>Nome:{user.fullName}</Text>
+                    
+                    <View style={{alignItems:'center'}}>
+                        <Text>ID:{user.id}</Text>
+                        <Text>Email:{user.primaryEmailAddress?.emailAddress}</Text>
+                        <Text>Nome:{user.fullName}</Text>
+                        {user.imageUrl?(
+                            <>
+                            <Image 
+                                source={{uri:user.imageUrl}}
+                                style={{
+                                    width:100,
+                                    height:100,
+                                    borderRadius:50
+                                }}
+                            />
+                            </>
+                        ):null}
+                    </View>
+                    
                 ):null}
                 
                 {listaItems.length <= 0 ? (
